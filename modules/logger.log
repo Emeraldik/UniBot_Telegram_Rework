@@ -1,0 +1,133 @@
+[2023-03-29 at 17:08:44] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:08:45] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:09:39] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:18:11] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:30:24] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:31:28] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:31:46] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:31:58] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:31:59] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:00] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:02] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:03] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:25] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:27] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:29] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:32] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:34] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:39] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:41] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:43] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:45] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:32:48] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:33:24] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:33:26] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:33:28] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:33:30] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:33:32] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:34:02] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:34:04] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:34:06] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:34:09] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 17:34:11] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:36:39] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:36:41] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:36:43] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:36:46] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:36:48] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:46:18] [DEBUG] [Using proactor: IocpProactor]
+[2023-03-29 at 18:46:18] [INFO] [2023-03-29 18:46.18 [info     ] request                        body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54493/session]
+[2023-03-29 at 18:46:19] [INFO] [2023-03-29 18:46.19 [info     ] response                       body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} data={'value': {'capabilities': {'acceptInsecureCerts': False, 'browserName': 'chrome', 'browserVersion': '110.0.5481.100', 'chrome': {'chromedriverVersion': '110.0.5481.77 (65ed616c6e8ee3fe0ad64fe83796c020644d42af-refs/branch-heads/5481@{#839})', 'userDataDir': 'C:\\Users\\Emerl\\AppData\\Local\\Temp\\scoped_dir1244_332133563'}, 'goog:chromeOptions': {'debuggerAddress': 'localhost:54495'}, 'networkConnectionEnabled': False, 'pageLoadStrategy': 'normal', 'platformName': 'windows', 'proxy': {}, 'setWindowRect': True, 'strictFileInteractability': False, 'timeouts': {'implicit': 0, 'pageLoad': 300000, 'script': 30000}, 'unhandledPromptBehavior': 'dismiss and notify', 'webauthn:extension:credBlob': True, 'webauthn:extension:largeBlob': True, 'webauthn:virtualAuthenticators': True}, 'sessionId': '2e9ae79778c31adc8d0205a4225555da'}} method=POST response=<ClientResponse(http://localhost:54493/session) [200 OK]>
+<CIMultiDictProxy('Content-Length': '789', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54493/session]
+[2023-03-29 at 18:46:19] [INFO] [2023-03-29 18:46.19 [info     ] request                        body={"url": "http://example.com"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da/url]
+[2023-03-29 at 18:46:19] [INFO] [2023-03-29 18:46.19 [info     ] response                       body={"url": "http://example.com"} data={'value': None} method=POST response=<ClientResponse(http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da/url) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da/url]
+[2023-03-29 at 18:46:19] [INFO] [2023-03-29 18:46.19 [info     ] request                        body={"using": "css selector", "value": "h1"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da/element]
+[2023-03-29 at 18:46:19] [INFO] [2023-03-29 18:46.19 [info     ] response                       body={"using": "css selector", "value": "h1"} data={'value': {'element-6066-11e4-a52e-4f735466cecf': '109ec652-f28a-425c-ae71-d1f020b45332'}} method=POST response=<ClientResponse(http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da/element) [200 OK]>
+<CIMultiDictProxy('Content-Length': '88', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da/element]
+[2023-03-29 at 18:46:19] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:46:19] [INFO] [2023-03-29 18:46.19 [info     ] request                        body=None header=None method=DELETE url=http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da]
+[2023-03-29 at 18:46:19] [INFO] [2023-03-29 18:46.19 [info     ] response                       body=None data={'value': None} method=DELETE response=<ClientResponse(http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54493/session/2e9ae79778c31adc8d0205a4225555da]
+[2023-03-29 at 18:46:19] [INFO] [2023-03-29 18:46.19 [info     ] request                        body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54502/session]
+[2023-03-29 at 18:46:20] [INFO] [2023-03-29 18:46.20 [info     ] response                       body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} data={'value': {'capabilities': {'acceptInsecureCerts': False, 'browserName': 'chrome', 'browserVersion': '110.0.5481.100', 'chrome': {'chromedriverVersion': '110.0.5481.77 (65ed616c6e8ee3fe0ad64fe83796c020644d42af-refs/branch-heads/5481@{#839})', 'userDataDir': 'C:\\Users\\Emerl\\AppData\\Local\\Temp\\scoped_dir10100_409048962'}, 'goog:chromeOptions': {'debuggerAddress': 'localhost:54504'}, 'networkConnectionEnabled': False, 'pageLoadStrategy': 'normal', 'platformName': 'windows', 'proxy': {}, 'setWindowRect': True, 'strictFileInteractability': False, 'timeouts': {'implicit': 0, 'pageLoad': 300000, 'script': 30000}, 'unhandledPromptBehavior': 'dismiss and notify', 'webauthn:extension:credBlob': True, 'webauthn:extension:largeBlob': True, 'webauthn:virtualAuthenticators': True}, 'sessionId': '3d70b0e83797908b4b1161e66cda91a4'}} method=POST response=<ClientResponse(http://localhost:54502/session) [200 OK]>
+<CIMultiDictProxy('Content-Length': '790', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54502/session]
+[2023-03-29 at 18:46:20] [INFO] [2023-03-29 18:46.20 [info     ] request                        body={"url": "http://example.com"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4/url]
+[2023-03-29 at 18:46:20] [INFO] [2023-03-29 18:46.20 [info     ] response                       body={"url": "http://example.com"} data={'value': None} method=POST response=<ClientResponse(http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4/url) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4/url]
+[2023-03-29 at 18:46:20] [INFO] [2023-03-29 18:46.20 [info     ] request                        body={"using": "css selector", "value": "h1"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4/element]
+[2023-03-29 at 18:46:20] [INFO] [2023-03-29 18:46.20 [info     ] response                       body={"using": "css selector", "value": "h1"} data={'value': {'element-6066-11e4-a52e-4f735466cecf': '313a84c3-0329-4a10-8bc0-63cfbb1fca99'}} method=POST response=<ClientResponse(http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4/element) [200 OK]>
+<CIMultiDictProxy('Content-Length': '88', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4/element]
+[2023-03-29 at 18:46:20] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:46:20] [INFO] [2023-03-29 18:46.20 [info     ] request                        body=None header=None method=DELETE url=http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4]
+[2023-03-29 at 18:46:20] [INFO] [2023-03-29 18:46.20 [info     ] response                       body=None data={'value': None} method=DELETE response=<ClientResponse(http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54502/session/3d70b0e83797908b4b1161e66cda91a4]
+[2023-03-29 at 18:46:21] [INFO] [2023-03-29 18:46.21 [info     ] request                        body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54511/session]
+[2023-03-29 at 18:46:21] [INFO] [2023-03-29 18:46.21 [info     ] response                       body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} data={'value': {'capabilities': {'acceptInsecureCerts': False, 'browserName': 'chrome', 'browserVersion': '110.0.5481.100', 'chrome': {'chromedriverVersion': '110.0.5481.77 (65ed616c6e8ee3fe0ad64fe83796c020644d42af-refs/branch-heads/5481@{#839})', 'userDataDir': 'C:\\Users\\Emerl\\AppData\\Local\\Temp\\scoped_dir4892_396244333'}, 'goog:chromeOptions': {'debuggerAddress': 'localhost:54513'}, 'networkConnectionEnabled': False, 'pageLoadStrategy': 'normal', 'platformName': 'windows', 'proxy': {}, 'setWindowRect': True, 'strictFileInteractability': False, 'timeouts': {'implicit': 0, 'pageLoad': 300000, 'script': 30000}, 'unhandledPromptBehavior': 'dismiss and notify', 'webauthn:extension:credBlob': True, 'webauthn:extension:largeBlob': True, 'webauthn:virtualAuthenticators': True}, 'sessionId': 'f10a2114cff830d06e5391a81da86827'}} method=POST response=<ClientResponse(http://localhost:54511/session) [200 OK]>
+<CIMultiDictProxy('Content-Length': '789', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54511/session]
+[2023-03-29 at 18:46:21] [INFO] [2023-03-29 18:46.21 [info     ] request                        body={"url": "http://example.com"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54511/session/f10a2114cff830d06e5391a81da86827/url]
+[2023-03-29 at 18:46:22] [INFO] [2023-03-29 18:46.22 [info     ] response                       body={"url": "http://example.com"} data={'value': None} method=POST response=<ClientResponse(http://localhost:54511/session/f10a2114cff830d06e5391a81da86827/url) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54511/session/f10a2114cff830d06e5391a81da86827/url]
+[2023-03-29 at 18:46:22] [INFO] [2023-03-29 18:46.22 [info     ] request                        body={"using": "css selector", "value": "h1"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54511/session/f10a2114cff830d06e5391a81da86827/element]
+[2023-03-29 at 18:46:22] [INFO] [2023-03-29 18:46.22 [info     ] response                       body={"using": "css selector", "value": "h1"} data={'value': {'element-6066-11e4-a52e-4f735466cecf': '4ffcbc9b-1368-4889-8a24-a13072d2ee15'}} method=POST response=<ClientResponse(http://localhost:54511/session/f10a2114cff830d06e5391a81da86827/element) [200 OK]>
+<CIMultiDictProxy('Content-Length': '88', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54511/session/f10a2114cff830d06e5391a81da86827/element]
+[2023-03-29 at 18:46:22] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:46:22] [INFO] [2023-03-29 18:46.22 [info     ] request                        body=None header=None method=DELETE url=http://localhost:54511/session/f10a2114cff830d06e5391a81da86827]
+[2023-03-29 at 18:46:22] [INFO] [2023-03-29 18:46.22 [info     ] response                       body=None data={'value': None} method=DELETE response=<ClientResponse(http://localhost:54511/session/f10a2114cff830d06e5391a81da86827) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54511/session/f10a2114cff830d06e5391a81da86827]
+[2023-03-29 at 18:46:22] [INFO] [2023-03-29 18:46.22 [info     ] request                        body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54520/session]
+[2023-03-29 at 18:46:23] [INFO] [2023-03-29 18:46.23 [info     ] response                       body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} data={'value': {'capabilities': {'acceptInsecureCerts': False, 'browserName': 'chrome', 'browserVersion': '110.0.5481.100', 'chrome': {'chromedriverVersion': '110.0.5481.77 (65ed616c6e8ee3fe0ad64fe83796c020644d42af-refs/branch-heads/5481@{#839})', 'userDataDir': 'C:\\Users\\Emerl\\AppData\\Local\\Temp\\scoped_dir16736_500921418'}, 'goog:chromeOptions': {'debuggerAddress': 'localhost:54522'}, 'networkConnectionEnabled': False, 'pageLoadStrategy': 'normal', 'platformName': 'windows', 'proxy': {}, 'setWindowRect': True, 'strictFileInteractability': False, 'timeouts': {'implicit': 0, 'pageLoad': 300000, 'script': 30000}, 'unhandledPromptBehavior': 'dismiss and notify', 'webauthn:extension:credBlob': True, 'webauthn:extension:largeBlob': True, 'webauthn:virtualAuthenticators': True}, 'sessionId': 'a341fc4dcf3474722d6624264280e7c5'}} method=POST response=<ClientResponse(http://localhost:54520/session) [200 OK]>
+<CIMultiDictProxy('Content-Length': '790', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54520/session]
+[2023-03-29 at 18:46:23] [INFO] [2023-03-29 18:46.23 [info     ] request                        body={"url": "http://example.com"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5/url]
+[2023-03-29 at 18:46:23] [INFO] [2023-03-29 18:46.23 [info     ] response                       body={"url": "http://example.com"} data={'value': None} method=POST response=<ClientResponse(http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5/url) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5/url]
+[2023-03-29 at 18:46:23] [INFO] [2023-03-29 18:46.23 [info     ] request                        body={"using": "css selector", "value": "h1"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5/element]
+[2023-03-29 at 18:46:23] [INFO] [2023-03-29 18:46.23 [info     ] response                       body={"using": "css selector", "value": "h1"} data={'value': {'element-6066-11e4-a52e-4f735466cecf': '6022b3a6-2849-4214-b573-eb9a836ebc73'}} method=POST response=<ClientResponse(http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5/element) [200 OK]>
+<CIMultiDictProxy('Content-Length': '88', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5/element]
+[2023-03-29 at 18:46:23] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:46:23] [INFO] [2023-03-29 18:46.23 [info     ] request                        body=None header=None method=DELETE url=http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5]
+[2023-03-29 at 18:46:23] [INFO] [2023-03-29 18:46.23 [info     ] response                       body=None data={'value': None} method=DELETE response=<ClientResponse(http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54520/session/a341fc4dcf3474722d6624264280e7c5]
+[2023-03-29 at 18:46:24] [INFO] [2023-03-29 18:46.24 [info     ] request                        body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54529/session]
+[2023-03-29 at 18:46:24] [INFO] [2023-03-29 18:46.24 [info     ] response                       body={"capabilities": {"alwaysMatch": {"goog:chromeOptions": {"args": ["--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage"]}}}} data={'value': {'capabilities': {'acceptInsecureCerts': False, 'browserName': 'chrome', 'browserVersion': '110.0.5481.100', 'chrome': {'chromedriverVersion': '110.0.5481.77 (65ed616c6e8ee3fe0ad64fe83796c020644d42af-refs/branch-heads/5481@{#839})', 'userDataDir': 'C:\\Users\\Emerl\\AppData\\Local\\Temp\\scoped_dir10944_1554472259'}, 'goog:chromeOptions': {'debuggerAddress': 'localhost:54531'}, 'networkConnectionEnabled': False, 'pageLoadStrategy': 'normal', 'platformName': 'windows', 'proxy': {}, 'setWindowRect': True, 'strictFileInteractability': False, 'timeouts': {'implicit': 0, 'pageLoad': 300000, 'script': 30000}, 'unhandledPromptBehavior': 'dismiss and notify', 'webauthn:extension:credBlob': True, 'webauthn:extension:largeBlob': True, 'webauthn:virtualAuthenticators': True}, 'sessionId': '1ed7395e3b4c76af06f72c7884839115'}} method=POST response=<ClientResponse(http://localhost:54529/session) [200 OK]>
+<CIMultiDictProxy('Content-Length': '791', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54529/session]
+[2023-03-29 at 18:46:24] [INFO] [2023-03-29 18:46.24 [info     ] request                        body={"url": "http://example.com"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115/url]
+[2023-03-29 at 18:46:24] [INFO] [2023-03-29 18:46.24 [info     ] response                       body={"url": "http://example.com"} data={'value': None} method=POST response=<ClientResponse(http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115/url) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115/url]
+[2023-03-29 at 18:46:24] [INFO] [2023-03-29 18:46.24 [info     ] request                        body={"using": "css selector", "value": "h1"} header={'Content-Type': 'application/json'} method=POST url=http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115/element]
+[2023-03-29 at 18:46:24] [INFO] [2023-03-29 18:46.24 [info     ] response                       body={"using": "css selector", "value": "h1"} data={'value': {'element-6066-11e4-a52e-4f735466cecf': '5c4e6e3e-7fd4-41a2-b8f5-582388210896'}} method=POST response=<ClientResponse(http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115/element) [200 OK]>
+<CIMultiDictProxy('Content-Length': '88', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115/element]
+[2023-03-29 at 18:46:24] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 18:46:24] [INFO] [2023-03-29 18:46.24 [info     ] request                        body=None header=None method=DELETE url=http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115]
+[2023-03-29 at 18:46:24] [INFO] [2023-03-29 18:46.24 [info     ] response                       body=None data={'value': None} method=DELETE response=<ClientResponse(http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115) [200 OK]>
+<CIMultiDictProxy('Content-Length': '14', 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-cache')>
+ url=http://localhost:54529/session/1ed7395e3b4c76af06f72c7884839115]
+[2023-03-29 at 19:00:58] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 19:00:59] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 19:01:00] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 19:01:02] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 19:01:03] [INFO] [[+] http://example.com card async]
+[2023-03-29 at 23:11:25] [INFO] [[+] https://lk.sut.ru/cabinet card async]
+[2023-03-29 at 23:25:41] [INFO] [[+] https://lk.sut.ru/cabinet card async]
+[2023-03-29 at 23:26:03] [INFO] [[+] https://lk.sut.ru/cabinet card async]
+[2023-03-29 at 23:26:26] [INFO] [[+] https://lk.sut.ru/cabinet card async]
+[2023-03-29 at 23:26:44] [INFO] [[+] https://lk.sut.ru/cabinet card async]

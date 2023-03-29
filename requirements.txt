@@ -1,0 +1,9 @@
+bs4
+loguru
+arsenic
+asyncio
+aiohttp
+structlog
+python-dotenv
+fake_useragent
+webdriver_manager
