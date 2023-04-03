@@ -44,5 +44,4 @@ async def get_schedule(autoweekday = False, day = 1, week = 1):
 		return pairs
 
 if __name__ == '__main__':
-	#print(asyncio.run(weekday('Europe/Moscow')))
 	print(asyncio.run(get_schedule(autoweekday=True)))

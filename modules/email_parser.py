@@ -26,7 +26,7 @@ def check_mailbox(host, user, password):
 		_, data = imap_client.uid('fetch', msg, '(RFC822)')
 		
 		converted_msg = email.message_from_bytes(data[0][1])
-		msg_date = email.utils.parsedate_to_datetime(converted_msg.get('Date')).astimezone(utc)
+		msg_date = email.utils.parsedate_to_datetime(converted_msg.get('Date')).astimezone(utc).strftime("%Y-%m-%d %H:%M:%S")
 		msg_id = converted_msg.get('Message-ID').split('.')[0].strip('<')
 		msg_header = decode_header(converted_msg.get('Subject'))[0][0].decode('cp1251')
 		
@@ -50,7 +50,8 @@ def check_mailbox(host, user, password):
 				'content' : msg_content[start_content : end_content],
 				'sender' : msg_sender,
 				'file' : file_in_msg,
-				'type' : 1 if msg_header == 'Загружены файлы в личном кабинете' else 0, # 1 - Файлы группы / 0 - Сообщения
+				'type' : 1 if msg_header == 'Загружены файлы в личном кабинете' else 0, 
+				# 1 - Файлы группы / 0 - Сообщения
 				'date': msg_date,
 			}
 		})
@@ -63,8 +64,6 @@ def check_mailbox(host, user, password):
 async def get_mail():
 	loop = asyncio.get_event_loop()
 	await loop.run_in_executor(None, check_mailbox, 'imap.yandex.ru', os.environ['EMAIL'], os.environ['PASS_MAIL'])
-	#await check_mailbox('imap.yandex.ru', os.environ['EMAIL'], os.environ['PASS_MAIL'])
 
 if __name__ == '__main__':
-	#print(find_dotenv())
 	asyncio.run(get_mail())
