@@ -8,12 +8,15 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from email.header import decode_header
 from dotenv import load_dotenv, find_dotenv
+from sqlite import SQLObj
 
 load_dotenv(find_dotenv())
 
-utc = timezone('UTC')
+db = SQLObj('../database/uni.db')
 
-def check_mailbox(host, user, password):
+tz_info = timezone('Europe/Moscow')
+
+def check_mailbox(host, user, password, _id :int=123):
 	imap_client = ilib.IMAP4_SSL(host=host)
 
 	imap_client.login(user, password)
@@ -26,7 +29,7 @@ def check_mailbox(host, user, password):
 		_, data = imap_client.uid('fetch', msg, '(RFC822)')
 		
 		converted_msg = email.message_from_bytes(data[0][1])
-		msg_date = email.utils.parsedate_to_datetime(converted_msg.get('Date')).astimezone(utc).strftime("%Y-%m-%d %H:%M:%S")
+		msg_date = email.utils.parsedate_to_datetime(converted_msg.get('Date')).astimezone(tz_info).strftime("%Y-%m-%d %H:%M:%S")
 		msg_id = converted_msg.get('Message-ID').split('.')[0].strip('<')
 		msg_header = decode_header(converted_msg.get('Subject'))[0][0].decode('cp1251')
 		
@@ -42,28 +45,23 @@ def check_mailbox(host, user, password):
 		msg_content = msg_content.replace('Прикрепленные файлы: смотрите в личном кабинете СПбГУТ.', '') if file_in_msg else msg_content
 		start_content = msg_content.find('Сообщение')
 		end_content = msg_content.find('Отправитель')
-		msg_sender = msg_content[end_content + len('Отправитель') : msg_content.find('Отвечать необходимо в личном кабинете,')].strip()
+		msg_sender = msg_content[end_content + len('Отправитель ') : msg_content.find('Отвечать необходимо в личном кабинете,')].strip()
 
-		info.update({
-			msg_id : {
-				'header' : msg_header,
-				'content' : msg_content[start_content : end_content],
-				'sender' : msg_sender,
-				'file' : file_in_msg,
-				'type' : 1 if msg_header == 'Загружены файлы в личном кабинете' else 0, 
-				# 1 - Файлы группы / 0 - Сообщения
-				'date': msg_date,
-			}
-		})
-		
+		db.add_message(
+			_id = _id, 
+			message_id = msg_id, 
+			m_date = msg_date, 
+			m_sender = msg_sender, 
+			m_type = 1 if msg_header == 'Загружены файлы в личном кабинете' else 0, 
+			m_text = msg_content[start_content : end_content].replace('Сообщение: ', '', 1), 
+			m_file = file_in_msg
+		)
+
 	imap_client.logout()
 
-	pprint(info)
-
-
-async def get_mail():
+async def get_mail(_id: int):
 	loop = asyncio.get_event_loop()
-	await loop.run_in_executor(None, check_mailbox, 'imap.yandex.ru', os.environ['EMAIL'], os.environ['PASS_MAIL'])
+	await loop.run_in_executor(None, check_mailbox, 'imap.yandex.ru', os.environ['EMAIL'], os.environ['PASS_MAIL'], _id)
 
 if __name__ == '__main__':
 	asyncio.run(get_mail())

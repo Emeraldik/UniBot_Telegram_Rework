@@ -3,10 +3,11 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
 import os, json, re
-from exceptions import RequestException
+from exceptions import RequestException, RequestExceptionCritical, WebDriverException
 from logger import logger
 from dotenv import find_dotenv, load_dotenv
 from sqlite import SQLObj
+import browser_selenium as b_s
 
 load_dotenv(find_dotenv())
 
@@ -40,12 +41,12 @@ data = {
 async def async_get_cookies():
 	async with aiohttp.ClientSession(trust_env=True, cookie_jar=aiohttp.CookieJar()) as session:
 		async with session.get('https://lk.sut.ru', headers=headers) as response:
-			if response.status != 200:
-				raise RequestException(f'lk.sut.ru got error code : {response.status}')
-			
-			logger.info('[!] <Got new cookies>')
-			cookies = session.cookie_jar.filter_cookies('https://lk.sut.ru')
-			return {cookie.key : cookie.value for key, cookie in cookies.items()}
+			if response.status != 200:  
+				raise RequestExceptionCritical(f'lk.sut.ru got error code : {response.status}')
+			else:
+				logger.info('[!] <Got new cookies>')
+				cookies = session.cookie_jar.filter_cookies('https://lk.sut.ru')
+				return {cookie.key : cookie.value for key, cookie in cookies.items()}
 
 async def async_button_interaction(cookies={}):
 	async with aiohttp.ClientSession(trust_env=True, cookie_jar=aiohttp.CookieJar()) as session:
@@ -60,6 +61,9 @@ async def async_button_interaction(cookies={}):
 			raw_buttons = soup.find_all('a', attrs={'onclick' : re.compile("^open_zan")})
 			buttons = [tuple(bt.get('onclick').strip('open_zan();').split(',')) for bt in raw_buttons if len(tuple(bt.get('onclick').strip('open_zan();').split(','))) == 2]
 
+		# if not buttons:
+		# 	logger.info(f'[-] <Zero button was founded>')
+
 		for tupl in buttons:
 			await session.post('https://lk.sut.ru/cabinet/project/cabinet/forms/raspisanie.php', headers=headers, cookies=cookies, data={
 				'open': 1,
@@ -70,19 +74,45 @@ async def async_button_interaction(cookies={}):
 
 async def main():
 	_id = 123
-	cookies = db.get_cookies(_id)
 
+	cookies = db.get_cookies(_id)
+	print(cookies)
+
+	all_data = []
 	try:
-		await async_button_interaction(cookies)
-	except RequestException as e:
-		logger.error(e)
-	except aiohttp.client_exceptions.TooManyRedirects as e:
+		await async_button_interaction(cookies=cookies)
+	except (aiohttp.client_exceptions.TooManyRedirects, RequestException):
 		logger.warning('[!] <Request was excepted (bad cookies)>')
 
-		cookies = await async_get_cookies()
-		db.update_cookies(_id, *tuple(cookies.values()))
+		try:
+			new_cookies = await async_get_cookies()
 
-		await async_button_interaction(cookies)
+			db.update_cookies(_id, *tuple(new_cookies.values()))
+			cookies.update(new_cookies)
+			print(cookies)
 
+			await async_button_interaction(cookies=cookies)
+		except (aiohttp.client_exceptions.TooManyRedirects, RequestExceptionCritical, RequestException) as e_f:
+			logger.error(f'[!] <First(requests) try> : {e_f}')
+			try:
+				new_cookies = await b_s.async_get_cookies()
+				
+				db.update_cookies(_id, *tuple(new_cookies.values()))
+				cookies.update(new_cookies)
+				print(cookies)
+
+				await async_button_interaction(cookies=cookies)
+			except (aiohttp.client_exceptions.TooManyRedirects, RequestExceptionCritical, RequestException) as e_s:
+				logger.error(f'[!] <Second(webdriver) try> : {e_s}')
+
+				try:
+					result = await b_s.async_button_interaction()
+				except WebDriverException as e_w:
+					logger.error(f'[!] <Third(last)(webdriver) try> : {e_w}')
+				else:
+					if result:
+						logger.debug(f'[+] <Third(last)(webdriver) try> : Button was clicked!')
+					else:
+						logger.debug(f'[-] <Third(last)(webdriver) try> : Button wasn\'t clicked')
 if __name__ == '__main__':
 	asyncio.run(main())

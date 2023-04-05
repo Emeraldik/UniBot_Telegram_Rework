@@ -45,7 +45,7 @@ async def async_browser_start():
 
 	# first block
 	try:
-		await session.get('https://lk.sut.ru/cabinet')
+		await session.get('https://lk.sut.ru')
 		
 		email = await session.wait_for_element(5, '#users')
 		await email.send_keys(os.environ['EMAIL'])
@@ -60,7 +60,7 @@ async def async_browser_start():
 		await stop_session(session)
 
 		raise WebDriverException(e)
-	finally:
+	else:
 		return session
 
 async def async_get_cookies():
@@ -71,7 +71,7 @@ async def async_get_cookies():
 	except Exception as e:
 		raise WebDriverException(e)
 	else:
-		return {i.get('name') : i.get('value') for i in cookies}	
+		return dict(reversed({i.get('name') : i.get('value') for i in cookies}.items()))
 	finally:
 		await stop_session(session)
 
@@ -93,6 +93,7 @@ async def async_button_interaction():
 		third_block = await session.wait_for_element(5, '.simple-little-table')
 
 		button_block = await third_block.get_elements('span')
+		clicked=False
 		for element in button_block:
 			attr = await element.get_attribute('on_click')
 			if attr.startswith('open_zan'):
@@ -100,16 +101,18 @@ async def async_button_interaction():
 					await element.click()
 				except:
 					pass
+				else:
+					clicked=True
 
 	except Exception as e:
 		raise WebDriverException(e)
 	finally:
 		await stop_session(session)
-
+		return clicked
 
 async def example():
 	set_arsenic_log_level(level = logging.DEBUG)
-
+	#print(await async_get_cookies())
 	#await async_button_interaction()
 	#await async_get_files()
 	#print(await async_get_cookies())
