@@ -8,11 +8,11 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from email.header import decode_header
 from dotenv import load_dotenv, find_dotenv
-from sqlite import SQLObj
+from modules.sqlite import SQLObj
 
 load_dotenv(find_dotenv())
 
-db = SQLObj('../database/uni.db')
+db = SQLObj('database/uni.db')
 
 tz_info = timezone('Europe/Moscow')
 

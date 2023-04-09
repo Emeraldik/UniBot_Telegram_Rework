@@ -2,9 +2,9 @@ from loguru import logger
 
 logger.add('/logs/logger.log', 
 	format='[{time:YYYY-MM-DD at HH:mm:ss}] [{level}] [{message}]', 
-	level = 'DEBUG', 
-	rotation = '1 week',
+	level='DEBUG', 
+	rotation='1 week',
 	catch=True,
 	enqueue=True,
-	compression = 'zip'
+	compression='zip'
 )

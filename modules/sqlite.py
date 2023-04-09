@@ -47,12 +47,15 @@ class SQLObj():
 	def close(self):
 		self.connection.close()
 
-	def record_exists(self, _id: int, table: str, *, message_id: int=None, specific: bool=False):
+	def record_exists(self, _id: int, table: str, *, unique_id: int=None, specific: bool=False):
 		self.table_exists(_id)
 		
 		with self.connection:
 			if specific:
-				result = self.cursor.execute(f'SELECT * FROM `{table}` WHERE `_id` = ? AND `message_id` = ?', (_id, message_id)).fetchall()
+				if table == 'messages':
+					result = self.cursor.execute(f'SELECT * FROM `{table}` WHERE `_id` = ? AND `message_id` = ?', (_id, unique_id)).fetchall()
+				elif table == 'files':
+					result = self.cursor.execute(f'SELECT * FROM `{table}` WHERE `_id` = ? AND `file_id` = ?', (_id, unique_id)).fetchall()
 			else:
 				result = self.cursor.execute(f'SELECT * FROM `{table}` WHERE `_id` = ?', (_id,)).fetchall()
 			return bool(len(result))
@@ -126,7 +129,7 @@ class SQLObj():
 		self.table_exists(_id)
 
 		with self.connection:
-			if self.record_exists(_id, 'messages', message_id=message_id, specific=True):
+			if self.record_exists(_id, 'messages', unique_id=message_id, specific=True):
 				self.cursor.execute('DELETE FROM `messages` WHERE `_id` = ? AND `message_id` = ?', (_id, message_id))
 
 	def delete_message_by_user(self, _id: int):
@@ -206,7 +209,7 @@ class SQLObj():
 		self.table_exists(_id)
 
 		with self.connection:
-			if self.record_exists(_id, 'files', file_id=file_id, specific=True):
+			if self.record_exists(_id, 'files', unique_id=file_id, specific=True):
 				self.cursor.execute('DELETE FROM `files` WHERE `_id` = ? AND `file_id` = ?', (_id, file_id))
 
 	def delete_file_by_user(self, _id: int):

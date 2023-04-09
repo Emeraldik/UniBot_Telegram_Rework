@@ -49,7 +49,7 @@ async def async_get_cookies():
 				return {cookie.key : cookie.value for key, cookie in cookies.items()}
 
 async def async_button_interaction(cookies={}):
-	async with aiohttp.ClientSession(trust_env=True, cookie_jar=aiohttp.CookieJar()) as session:
+	async with aiohttp.ClientSession(trust_env=True) as session:
 		async with session.post('https://lk.sut.ru/cabinet/lib/autentificationok.php', cookies=cookies, headers=headers, data=data) as response:
 			if response.status != 200:
 				raise RequestException('bad cookies')

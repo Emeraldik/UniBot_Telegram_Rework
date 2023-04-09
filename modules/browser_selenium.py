@@ -9,12 +9,12 @@ from bs4 import BeautifulSoup
 #from email_parser import get_mail
 #from fake_useragent import UserAgent
 
-from logger import logger
+from modules.logger import logger
 import logging
 import structlog
 
 import os
-from exceptions import WebDriverException
+from modules.exceptions import WebDriverException
 from time import perf_counter
 from dotenv import load_dotenv, find_dotenv
 

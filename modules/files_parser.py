@@ -8,14 +8,14 @@ import asyncio, aiohttp
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
-from logger import logger
-from sqlite import SQLObj
-import browser_selenium as b_s
-from exceptions import RequestException, RequestExceptionCritical
+from modules.logger import logger
+from modules.sqlite import SQLObj
+import modules.browser_selenium as b_s
+from modules.exceptions import RequestException, RequestExceptionCritical
 
 load_dotenv(find_dotenv())
 
-db = SQLObj('../database/uni.db')
+db = SQLObj('database/uni.db')
 
 headers = {
 	'authority': 'lk.sut.ru',
