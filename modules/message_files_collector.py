@@ -1,7 +1,7 @@
 from modules.sqlite import SQLObj
 from modules.files_parser import start_parse as fm_start_parse
 from modules.email_parser import get_mail as e_start_parse
-from pprint import pprint # optional
+#from pprint import pprint # optional
 from datetime import datetime, timedelta
 
 import asyncio

@@ -1,5 +1,5 @@
 import os, json, re
-from pprint import pprint # optional
+#from pprint import pprint # optional
 from datetime import datetime
 from time import perf_counter # optional
 from dotenv import find_dotenv, load_dotenv

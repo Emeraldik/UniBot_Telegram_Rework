@@ -3,7 +3,7 @@ import email
 import asyncio
 import imaplib as ilib
 from pytz import timezone
-from pprint import pprint # optional 
+#from pprint import pprint # optional 
 from bs4 import BeautifulSoup
 from datetime import datetime
 from email.header import decode_header

@@ -2,16 +2,17 @@ import asyncio, aiohttp
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
+from modules.exceptions import RequestException, RequestExceptionCritical, WebDriverException
+from modules.logger import logger
+from modules.sqlite import SQLObj
+import modules.browser_selenium as b_s
+
 import os, json, re
-from exceptions import RequestException, RequestExceptionCritical, WebDriverException
-from logger import logger
 from dotenv import find_dotenv, load_dotenv
-from sqlite import SQLObj
-import browser_selenium as b_s
 
 load_dotenv(find_dotenv())
 
-db = SQLObj('../database/uni.db')
+db = SQLObj('database/uni.db')
 
 headers = {
 	'authority': 'lk.sut.ru',
@@ -72,11 +73,11 @@ async def async_button_interaction(cookies={}):
 			})
 			logger.info(f'[+] <{tupl} was pressed>')
 
-async def main():
-	_id = 123
+async def async_click_start(_id: int):
+	_id = _id
 
 	cookies = db.get_cookies(_id)
-	print(cookies)
+	#print(cookies)
 
 	all_data = []
 	try:
@@ -89,7 +90,7 @@ async def main():
 
 			db.update_cookies(_id, *tuple(new_cookies.values()))
 			cookies.update(new_cookies)
-			print(cookies)
+			#print(cookies)
 
 			await async_button_interaction(cookies=cookies)
 		except (aiohttp.client_exceptions.TooManyRedirects, RequestExceptionCritical, RequestException) as e_f:
@@ -99,7 +100,7 @@ async def main():
 				
 				db.update_cookies(_id, *tuple(new_cookies.values()))
 				cookies.update(new_cookies)
-				print(cookies)
+				#print(cookies)
 
 				await async_button_interaction(cookies=cookies)
 			except (aiohttp.client_exceptions.TooManyRedirects, RequestExceptionCritical, RequestException) as e_s:
@@ -112,7 +113,9 @@ async def main():
 				else:
 					if result:
 						logger.debug(f'[+] <Third(last)(webdriver) try> : Button was clicked!')
+						return 'Button was clicked'
 					else:
 						logger.debug(f'[-] <Third(last)(webdriver) try> : Button wasn\'t clicked')
+						return None
 if __name__ == '__main__':
-	asyncio.run(main())
+	asyncio.run(async_click_start(123))

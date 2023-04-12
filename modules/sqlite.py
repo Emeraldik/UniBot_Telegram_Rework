@@ -1,5 +1,5 @@
 import sqlite3
-from pprint import pprint # optional 
+#from pprint import pprint # optional 
 
 class SQLObj():
 	def __init__(self, db_file: str):
@@ -38,7 +38,7 @@ class SQLObj():
 
 			self.cursor.execute(f'''Create TABLE if not exists settings (
 				_id INT UNIQUE,
-				_chat_id INT,
+				_chat_id INT UNIQUE,
 				get_mail BOOLEAN,
 				get_files BOOLEAN,
 				get_schedule BOOLEAN,
@@ -182,6 +182,8 @@ class SQLObj():
 		with self.connection:
 			self.cursor.execute('INSERT OR REPLACE INTO `settings` (`_id`, `_chat_id`, `get_mail`, `get_files`, `get_schedule`, `auto_click_button`) VALUES (?, ?, ?, ?, ?, ?)', (_id, _chat_id, get_mail, get_files, get_schedule, auto_click_button))
 
+		return True
+
 # Files TABLE interactions
 
 	'''
@@ -242,7 +244,7 @@ class SQLObj():
 		self.table_exists(user_id)
 
 		db_pairs = self.get_pairs(user_id)
-		pairs = [(i.strip('\n'),) for i in pairs if i in db_pairs]
+		pairs = [(i,) for i in pairs if i in db_pairs]
 		
 		with self.connection:
 			self.cursor.executemany(f'''DELETE FROM `pairs_{user_id}` WHERE `pairs` = ?''', pairs)
@@ -256,7 +258,7 @@ class SQLObj():
 
 if __name__ == '__main__':
 	db = SQLObj('../database/uni.db')
-
+	usid, chid, *settings = db.get_settings(556147516)[0]
 	# db.update_cookies(_id=123, ddg1_=2, cookie=4, miden=5, uid=6)
 	# print(db.get_cookies(123))
 	# db.update_cookies(_id=123,  cookie=4, miden=5, uid=6)
