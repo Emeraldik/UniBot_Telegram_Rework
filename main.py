@@ -127,6 +127,13 @@ async def unsubscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 			f"Ваш ID {user.id}, не находился в базе данных бота!"
 		)
 
+async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+	await update.message.reply_text(f'Wait a 5 seconds, start operation')
+	button_result = await async_click_start(update.effective_user.id)
+	if not button_result:
+		result = 'Button wasn\'t clicked'
+	await update.message.reply_text(f'Готово! \n{result}')
+
 
 # async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 #     await update.message.reply_text(
@@ -275,7 +282,7 @@ def main() -> None:
 	#application.add_handler(CommandHandler("help", help_command))
 	application.add_handler(CommandHandler('pairs', pairs, filters=filters.User(user_id=OWNER_ID)))
 	application.add_handler(CommandHandler('messages', messages, filters=filters.User(user_id=OWNER_ID)))
-
+	application.add_handler(CommandHandler('button', button_click, filters=filters.User(user_id=OWNER_ID)))
 
 	#application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
