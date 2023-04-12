@@ -38,11 +38,16 @@ class SQLObj():
 
 			self.cursor.execute(f'''Create TABLE if not exists settings (
 				_id INT UNIQUE,
+				_chat_id INT,
 				get_mail BOOLEAN,
 				get_files BOOLEAN,
 				get_schedule BOOLEAN,
 				auto_click_button BOOLEAN
 			);''')
+
+			self.cursor.execute(f'''Create TABLE if not exists pairs_{user_id} 
+				(pairs INT UNIQUE)
+			''')
 
 	def close(self):
 		self.connection.close()
@@ -166,7 +171,7 @@ class SQLObj():
 			else:
 				return self.cursor.execute('SELECT * FROM `settings` WHERE `_id` = ?', (_id,)).fetchall()
 
-	def set_settings(self, _id: int, *, get_mail: bool=None, get_files: bool=None, get_schedule: bool=None, auto_click_button: bool=None):
+	def set_settings(self, _id: int, _chat_id: int, *, get_mail: bool=None, get_files: bool=None, get_schedule: bool=None, auto_click_button: bool=None):
 		self.table_exists(_id)
 
 		get_mail = get_mail if not get_mail is None else bool(self.get_settings(_id, get_mail=True)[0][0])
@@ -175,7 +180,7 @@ class SQLObj():
 		auto_click_button = auto_click_button if not auto_click_button is None else bool(self.get_settings(_id, auto_click_button=True)[0][0])
 
 		with self.connection:
-			self.cursor.execute('INSERT OR REPLACE INTO `settings` (`_id`, `get_mail`, `get_files`, `get_schedule`, `auto_click_button`) VALUES (?, ?, ?, ?, ?)', (_id, get_mail, get_files, get_schedule, auto_click_button))
+			self.cursor.execute('INSERT OR REPLACE INTO `settings` (`_id`, `_chat_id`, `get_mail`, `get_files`, `get_schedule`, `auto_click_button`) VALUES (?, ?, ?, ?, ?, ?)', (_id, _chat_id, get_mail, get_files, get_schedule, auto_click_button))
 
 # Files TABLE interactions
 
@@ -218,6 +223,36 @@ class SQLObj():
 		with self.connection:
 			if self.record_exists(_id, 'files'):
 				self.cursor.execute('DELETE FROM `files` WHERE `_id` = ?', (_id,))
+
+	def add_pairs(self, user_id, pairs: list):
+		self.table_exists(user_id)
+
+		pairs = [(i,) for i in pairs]
+		
+		with self.connection:
+			self.cursor.executemany(f'INSERT OR IGNORE INTO `pairs_{user_id}` VALUES (?)', pairs)
+
+	def clear_pairs(self, user_id):
+		self.table_exists(user_id)
+
+		with self.connection:
+			self.cursor.execute(f'DELETE FROM `pairs_{user_id}`')
+
+	def delete_pairs(self, user_id, pairs: list):
+		self.table_exists(user_id)
+
+		db_pairs = self.get_pairs(user_id)
+		pairs = [(i.strip('\n'),) for i in pairs if i in db_pairs]
+		
+		with self.connection:
+			self.cursor.executemany(f'''DELETE FROM `pairs_{user_id}` WHERE `pairs` = ?''', pairs)
+	
+	def get_pairs(self, user_id):
+		self.table_exists(user_id)
+		
+		with self.connection:
+			result = self.cursor.execute(f'SELECT * FROM pairs_{user_id}')
+			return [i[0] for i in result.fetchall()]
 
 if __name__ == '__main__':
 	db = SQLObj('../database/uni.db')

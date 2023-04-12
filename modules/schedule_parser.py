@@ -39,7 +39,7 @@ async def get_schedule(autoweekday = False, day = 1, week = 1):
 				week_list = [int(i) for i in pair.find('span', class_= 'weeks').text.strip('*()н').replace(',', '').split()]
 				if weekday.get('week') in week_list:
 					pair_name = pair.find('strong').text
-					pairs.update({pair.get('pair') : (pair_name, week_list)})
+					pairs.update({int(pair.get('pair')) - 1 : (pair_name, week_list)})
 
 		return pairs
 
