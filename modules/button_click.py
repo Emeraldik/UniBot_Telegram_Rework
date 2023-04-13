@@ -7,7 +7,7 @@ from modules.logger import logger
 from modules.sqlite import SQLObj
 import modules.browser_selenium as b_s
 
-import os, json, re
+import os, re
 from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
@@ -64,24 +64,28 @@ async def async_button_interaction(cookies={}):
 
 		# if not buttons:
 		# 	logger.info(f'[-] <Zero button was founded>')
+		if buttons:
+			for tupl in buttons:
+				await session.post('https://lk.sut.ru/cabinet/project/cabinet/forms/raspisanie.php', headers=headers, cookies=cookies, data={
+					'open': 1,
+					'rasp': tupl[0],
+					'week': tupl[1]
+				})
+				logger.info(f'[+] <{tupl} was pressed>')
+			else:
+				return True
 
-		for tupl in buttons:
-			await session.post('https://lk.sut.ru/cabinet/project/cabinet/forms/raspisanie.php', headers=headers, cookies=cookies, data={
-				'open': 1,
-				'rasp': tupl[0],
-				'week': tupl[1]
-			})
-			logger.info(f'[+] <{tupl} was pressed>')
-
-async def async_click_start(_id: int):
+async def async_click_start(_id: int, *, with_print=False):
 	_id = _id
 
 	cookies = db.get_cookies(_id)
 	#print(cookies)
 
 	all_data = []
+	was_clicked=None
+
 	try:
-		await async_button_interaction(cookies=cookies)
+		was_clicked=await async_button_interaction(cookies=cookies)
 	except (aiohttp.client_exceptions.TooManyRedirects, RequestException):
 		logger.warning('[!] <Request was excepted (bad cookies)>')
 
@@ -92,7 +96,7 @@ async def async_click_start(_id: int):
 			cookies.update(new_cookies)
 			#print(cookies)
 
-			await async_button_interaction(cookies=cookies)
+			was_clicked=await async_button_interaction(cookies=cookies)
 		except (aiohttp.client_exceptions.TooManyRedirects, RequestExceptionCritical, RequestException) as e_f:
 			logger.error(f'[!] <First(requests) try> : {e_f}')
 			try:
@@ -102,20 +106,22 @@ async def async_click_start(_id: int):
 				cookies.update(new_cookies)
 				#print(cookies)
 
-				await async_button_interaction(cookies=cookies)
+				was_clicked=await async_button_interaction(cookies=cookies)
 			except (aiohttp.client_exceptions.TooManyRedirects, RequestExceptionCritical, RequestException) as e_s:
 				logger.error(f'[!] <Second(webdriver) try> : {e_s}')
 
 				try:
-					result = await b_s.async_button_interaction()
+					was_clicked=await b_s.async_button_interaction()
 				except WebDriverException as e_w:
 					logger.error(f'[!] <Third(last)(webdriver) try> : {e_w}')
-				else:
-					if result:
-						logger.debug(f'[+] <Third(last)(webdriver) try> : Button was clicked!')
-						return 'Button was clicked'
-					else:
-						logger.debug(f'[-] <Third(last)(webdriver) try> : Button wasn\'t clicked')
-						return None
+						
+	if was_clicked:
+		logger.debug(f'[+] <> : Button was clicked!')
+		return 'Button was clicked'
+	else:
+		if with_print:
+			logger.debug(f'[-] <> : Button wasn\'t clicked')
+		return None
+
 if __name__ == '__main__':
 	asyncio.run(async_click_start(123))

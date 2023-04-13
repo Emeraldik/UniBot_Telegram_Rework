@@ -1,11 +1,7 @@
-os
 bs4
 pytz
-email
+lxml
 loguru
-logging
-sqlite3
-imaplib
 arsenic
 asyncio
 aiohttp
@@ -13,3 +9,4 @@ structlog
 python-dotenv
 fake_useragent
 webdriver_manager
+python-telegram-bot[all]

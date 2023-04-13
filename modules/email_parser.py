@@ -5,7 +5,7 @@ import imaplib as ilib
 from pytz import timezone
 #from pprint import pprint # optional 
 from bs4 import BeautifulSoup
-from datetime import datetime
+#from datetime import datetime
 from email.header import decode_header
 from dotenv import load_dotenv, find_dotenv
 from modules.sqlite import SQLObj

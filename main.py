@@ -3,7 +3,7 @@ from telegram.ext import Application, CommandHandler, CallbackContext, ContextTy
 
 import os
 import logging
-import asyncio
+#import asyncio
 
 import datetime
 from pytz import timezone
@@ -11,6 +11,7 @@ from datetime import timedelta
 from datetime import datetime as dt
 
 from dotenv import load_dotenv, find_dotenv
+from keep_alive import keep_alive
 
 from modules.sqlite import SQLObj
 from modules.schedule_parser import get_schedule
@@ -92,7 +93,8 @@ async def messages(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 		start_message = 'Файлы группы.' if v.get('m_type') else 'Сообщение студенту.'
 		date = dt.strptime(v.get('m_date'), '%Y-%m-%d %H:%M:%S').strftime('%H:%M:%S %d.%m.%Y')
 		if v.get('links'):
-			await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date} \nСсылки: {" ".join(v.get("links"))}')
+			links_prt = '\n\n'.join(v.get('links'))
+			await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date} \nСсылки:\n{links_prt}')
 		else:
 			await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
 
@@ -129,7 +131,7 @@ async def unsubscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	await update.message.reply_text(f'Wait a 5 seconds, start operation')
-	button_result = await async_click_start(update.effective_user.id)
+	button_result = await async_click_start(update.effective_user.id, with_print=True)
 	if not button_result:
 		result = 'Button wasn\'t clicked'
 	await update.message.reply_text(f'Готово! \n{result}')
@@ -167,7 +169,7 @@ async def create_button_click(context: CallbackContext):
 	
 	
 	if job.chat_id and result:
-		current_job = context.job_queue.get_jobs_by_name(job.data)
+		current_job = context.job_queue.get_jobs_by_name(f'{job.user_id}_{k}')
 		if current_job:
 			for job in current_job:
 				job.schedule_removal()
@@ -188,7 +190,8 @@ async def create_email_parser(context: CallbackContext):
 			start_message = 'Файлы группы.' if v.get('m_type') else 'Сообщение студенту.'
 			date = dt.strptime(v.get('m_date'), '%Y-%m-%d %H:%M:%S').strftime('%H:%M:%S %d.%m.%Y')
 			if v.get('links'):
-				await context.bot.send_message(job.chat_id, f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date} \nСсылки: {" ".join(v.get("links"))}')
+				links_prt = '\n\n'.join(v.get('links'))
+				await context.bot.send_message(job.chat_id, f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date} \nСсылки:\n{links_prt}')
 			else:
 				await context.bot.send_message(job.chat_id, f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
 
@@ -286,6 +289,7 @@ def main() -> None:
 
 	#application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
+	keep_alive()
 	application.run_polling()
 
 if __name__ == "__main__":

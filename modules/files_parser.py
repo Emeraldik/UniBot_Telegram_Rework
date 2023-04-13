@@ -1,4 +1,4 @@
-import os, json, re
+import os, re
 #from pprint import pprint # optional
 from datetime import datetime
 from time import perf_counter # optional

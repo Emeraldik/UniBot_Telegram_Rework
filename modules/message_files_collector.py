@@ -14,8 +14,9 @@ async def start_parse(_id):
 	messages_with_files = list(filter(lambda item: item.get('m_file'), messages))
 	messages_without_files = list(filter(lambda item: not item.get('m_file'), messages))
 
-	await fm_start_parse(_id, n=len(messages)//27 + 1)
-	files = list(sorted(db.get_files(_id), key=lambda item: item.get('m_date'), reverse=True))
+	if messages_with_files:
+		await fm_start_parse(_id, n=len(messages)//27 + 1)
+		files = list(sorted(db.get_files(_id), key=lambda item: item.get('m_date'), reverse=True))
 
 	dates = ()
 	result = messages_without_files

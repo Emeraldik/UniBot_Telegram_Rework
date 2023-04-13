@@ -1,15 +1,15 @@
 import asyncio
-import arsenic
+#import arsenic
 from arsenic import start_session, stop_session
 from arsenic import browsers
 from arsenic import services
 from webdriver_manager.chrome import ChromeDriverManager
 
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 #from email_parser import get_mail
 #from fake_useragent import UserAgent
 
-from modules.logger import logger
+#from modules.logger import logger
 import logging
 import structlog
 
