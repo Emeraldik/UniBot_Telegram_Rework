@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from email.header import decode_header
 from dotenv import load_dotenv, find_dotenv
 from modules.sqlite import SQLObj
+from modules.logger import logger
 
 load_dotenv(find_dotenv())
 
@@ -17,13 +18,16 @@ db = SQLObj('database/uni.db')
 tz_info = timezone('Europe/Moscow')
 
 def check_mailbox(host, user, password, _id :int=123):
-	imap_client = ilib.IMAP4_SSL(host=host)
+	try:
+		imap_client = ilib.IMAP4_SSL(host=host)
 
-	imap_client.login(user, password)
-	imap_client.select('inbox')
+		imap_client.login(user, password)
+		imap_client.select('inbox')
+	except:
+		logger.debug('[-] <Email Error> Email connection error')
+		return
+
 	_, messages = imap_client.uid('search', 'UNSEEN', 'ALL', 'FROM "anketa@sut.ru"')
-
-	info = {}
 	
 	for msg in messages[0].split()[::-1]:
 		_, data = imap_client.uid('fetch', msg, '(RFC822)')

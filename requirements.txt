@@ -5,6 +5,7 @@ loguru
 arsenic
 asyncio
 aiohttp
+aiofiles
 structlog
 python-dotenv
 fake_useragent

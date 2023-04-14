@@ -4,6 +4,7 @@ from telegram.ext import Application, CommandHandler, CallbackContext, ContextTy
 import os
 import logging
 #import asyncio
+#import aiofiles.os
 
 import datetime
 from pytz import timezone
@@ -11,10 +12,11 @@ from datetime import timedelta
 from datetime import datetime as dt
 
 from dotenv import load_dotenv, find_dotenv
-from keep_alive import keep_alive
+#from keep_alive import keep_alive
 
 from modules.sqlite import SQLObj
 from modules.schedule_parser import get_schedule
+from modules.file_downloader import start_download
 from modules.button_click import async_click_start
 from modules.message_files_collector import start_parse as mfc_start_parse
 
@@ -73,7 +75,11 @@ async def subscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 #@is_owner
 async def pairs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	await update.message.reply_text(f'Wait a 5 seconds, start parsing')
+	user_id = update.effective_user.id
 	schedule = await get_schedule(autoweekday=True)
+	db.clear_pairs(user_id)
+	db.add_pairs(user_id, [i for i in schedule.keys()])
+	
 	result = "\n".join([(f'{k}: {v[0]}') for k, v in schedule.items()])
 	if not result:
 		result = 'No pairs'
@@ -92,11 +98,16 @@ async def messages(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	for v in result:
 		start_message = 'Файлы группы.' if v.get('m_type') else 'Сообщение студенту.'
 		date = dt.strptime(v.get('m_date'), '%Y-%m-%d %H:%M:%S').strftime('%H:%M:%S %d.%m.%Y')
+		await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
 		if v.get('links'):
-			links_prt = '\n\n'.join(v.get('links'))
-			await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date} \nСсылки:\n{links_prt}')
-		else:
-			await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
+			files_names = await start_download(v.get('links'))
+			#links_prt = '\n\n'.join(v.get('links'))
+			for file in files_names:
+				#async with aiofiles.open(file, 'rb') as file:
+				await update.message.reply_document(document=open(file, 'rb'))
+
+			#await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date} \nСсылки:\n{links_prt}')
+		#else:
 
 	db.delete_file_by_user(_id=update.effective_user.id)
 	db.delete_message_by_user(_id=update.effective_user.id)
@@ -151,15 +162,22 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 async def create_schedule_checker(context: CallbackContext):
 	# await update.message.reply_text(f'Wait a 5 seconds, start parsing')
 	job = context.job
+	schedule = await get_schedule(autoweekday=True)
+	db.clear_pairs(job.user_id)
+	db.add_pairs(job.user_id, [i for i in schedule.keys()])
+		
 	if job.chat_id:
-		schedule = await get_schedule(autoweekday=True)
-		db.clear_pairs(job.user_id)
-		db.add_pairs(job.user_id, [i for i in schedule.keys()])
 		result = "\n".join([(f'{k}: {v[0]}') for k, v in schedule.items()])
 		if not result:
 			result = 'No pairs'
-
+		
 		await context.bot.send_message(job.chat_id, text=f'Pairs today : \n{result}')
+
+	current_job = context.job_queue.get_jobs_by_name(f'schedule_{job.user_id}')
+	if current_job:
+		for job in current_job:
+			job.schedule_removal()
+
 
 async def create_button_click(context: CallbackContext):
 	# await update.message.reply_text(f'Wait a 5 seconds, start parsing')
@@ -169,7 +187,7 @@ async def create_button_click(context: CallbackContext):
 	
 	
 	if job.chat_id and result:
-		current_job = context.job_queue.get_jobs_by_name(f'{job.user_id}_{k}')
+		current_job = context.job_queue.get_jobs_by_name(f'{job.user_id}_{job.data}')
 		if current_job:
 			for job in current_job:
 				job.schedule_removal()
@@ -189,11 +207,12 @@ async def create_email_parser(context: CallbackContext):
 		for v in result:
 			start_message = 'Файлы группы.' if v.get('m_type') else 'Сообщение студенту.'
 			date = dt.strptime(v.get('m_date'), '%Y-%m-%d %H:%M:%S').strftime('%H:%M:%S %d.%m.%Y')
+			await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
 			if v.get('links'):
-				links_prt = '\n\n'.join(v.get('links'))
-				await context.bot.send_message(job.chat_id, f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date} \nСсылки:\n{links_prt}')
-			else:
-				await context.bot.send_message(job.chat_id, f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
+				files_names = await start_download(v.get('links'))
+				for file in files_names:
+					await update.message.reply_document(document=open(file, 'rb'))
+					os.remove(file)
 
 		db.delete_file_by_user(_id=job.user_id)
 		db.delete_message_by_user(_id=job.user_id)
@@ -220,12 +239,12 @@ def delete_jobs(application, _id: int):
 	return jobs
 
 def create_jobs(application, *, _id: int=None):
-	moscow = timezone('Europe/Moscow')
-	time = datetime.time(hour=8, tzinfo=moscow)
-	
-	job_queue = application.job_queue
-
 	_id = _id or OWNER_ID
+	delete_jobs(application, _id)	
+
+	moscow = timezone('Europe/Moscow')
+
+	job_queue = application.job_queue
 
 	mail, files, schedule, auto_click = (False, False, False, False)
 	
@@ -237,7 +256,21 @@ def create_jobs(application, *, _id: int=None):
 		job_queue.run_repeating(create_email_parser, interval=60*1, name=f'email_{_id}', user_id=_id, chat_id=_id)
 	
 	if schedule or auto_click:
-		job_queue.run_daily(create_schedule_checker, time, name=f'schedule_{_id}', user_id=_id, chat_id=_id)
+		start_time = dt.combine(dt.today(), datetime.time(hour=1))
+		end_time = start_time + timedelta(hours=7)
+		
+		start_time = moscow.localize(start_time)
+		end_time = moscow.localize(end_time)
+
+		job_queue.run_repeating(
+			create_schedule_checker, 
+			name=f'schedule_{_id}',
+			first=start_time, 
+			interval=60*1, 
+			last=end_time, 
+			user_id=_id, 
+			chat_id=_id
+		)
 
 		if auto_click:
 			dict_pairs = {
@@ -250,7 +283,7 @@ def create_jobs(application, *, _id: int=None):
 				86: datetime.time(hour=13, minute=20),
 			} 
 
-			db_pairsdb = db.get_pairs(OWNER_ID)
+			db_pairsdb = db.get_pairs(_id)
 
 			for k in db_pairsdb:
 				start_time = dt.combine(dt.today(), dict_pairs.get(k, datetime.time(hour=8, minute=50)))
@@ -289,7 +322,7 @@ def main() -> None:
 
 	#application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
-	keep_alive()
+	#keep_alive()
 	application.run_polling()
 
 if __name__ == "__main__":
