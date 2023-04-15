@@ -50,7 +50,6 @@ async def subscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	if settings:
 		usid, chid, *settings = settings[0]
 
-		#print(settings)
 		if all(settings):
 			await update.message.reply_text(
 				f"Ваш ID {user.id}, уже был зарегистрирован в базе данных бота!"
@@ -88,29 +87,29 @@ async def pairs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 #@is_owner
 async def messages(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	await update.message.reply_text(f'Wait a 10 seconds, start parsing')
-	result = await mfc_start_parse(update.effective_user.id)
-	if not result:
-		await update.message.reply_text('No messages')
-		return
+	try:
+		result = await mfc_start_parse(update.effective_user.id)
+	except:
+		await update.message.reply_text(f'Sorry! Something went wrong.')
+	else:
+		if not result:
+			await update.message.reply_text('No messages')
+			return
 
-	result = sorted(result, key=lambda item: item.get('m_date'))
+		result = sorted(result, key=lambda item: item.get('m_date'))
 
-	for v in result:
-		start_message = 'Файлы группы.' if v.get('m_type') else 'Сообщение студенту.'
-		date = dt.strptime(v.get('m_date'), '%Y-%m-%d %H:%M:%S').strftime('%H:%M:%S %d.%m.%Y')
-		await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
-		if v.get('links'):
-			files_names = await start_download(v.get('links'))
-			#links_prt = '\n\n'.join(v.get('links'))
-			for file in files_names:
-				#async with aiofiles.open(file, 'rb') as file:
-				await update.message.reply_document(document=open(file, 'rb'))
+		for v in result:
+			start_message = 'Файлы группы.' if v.get('m_type') else 'Сообщение студенту.'
+			date = dt.strptime(v.get('m_date'), '%Y-%m-%d %H:%M:%S').strftime('%H:%M:%S %d.%m.%Y')
+			await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
+			if v.get('links'):
+				files_names = await start_download(v.get('links'))
+				for file in files_names:
+					await update.message.reply_document(document=open(file, 'rb'))
+					os.remove(file)
 
-			#await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date} \nСсылки:\n{links_prt}')
-		#else:
-
-	db.delete_file_by_user(_id=update.effective_user.id)
-	db.delete_message_by_user(_id=update.effective_user.id)
+		db.delete_file_by_user(_id=update.effective_user.id)
+		db.delete_message_by_user(_id=update.effective_user.id)
 
 #@is_owner
 async def unsubscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -119,8 +118,6 @@ async def unsubscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 	settings = db.get_settings(user.id)
 	if settings:
 		usid, chid, *settings = settings[0]
-
-		#print(settings)
 
 		if any(settings):
 		
@@ -142,10 +139,14 @@ async def unsubscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
 async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	await update.message.reply_text(f'Wait a 5 seconds, start operation')
-	button_result = await async_click_start(update.effective_user.id, with_print=True)
-	if not button_result:
-		result = 'Button wasn\'t clicked'
-	await update.message.reply_text(f'Готово! \n{result}')
+	try:
+		button_result = await async_click_start(update.effective_user.id, with_print=True)
+	except:
+		await update.message.reply_text(f'Sorry! Something went wrong.')
+	else:
+		if not button_result:
+			result = 'Button wasn\'t clicked'
+		await update.message.reply_text(f'Готово! \n{result}')
 
 
 # async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -160,7 +161,6 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 # 	context.bot.send_message(text='A single message with 30s delay')
 
 async def create_schedule_checker(context: CallbackContext):
-	# await update.message.reply_text(f'Wait a 5 seconds, start parsing')
 	job = context.job
 	schedule = await get_schedule(autoweekday=True)
 	db.clear_pairs(job.user_id)
@@ -180,11 +180,12 @@ async def create_schedule_checker(context: CallbackContext):
 
 
 async def create_button_click(context: CallbackContext):
-	# await update.message.reply_text(f'Wait a 5 seconds, start parsing')
 	job = context.job
-	#print(job.data, ' start ')
-	result = await async_click_start(_id = job.user_id)
-	
+
+	try:
+		result = await async_click_start(_id = job.user_id)
+	except Exception as e:
+		logger.error(e)	
 	
 	if job.chat_id and result:
 		current_job = context.job_queue.get_jobs_by_name(f'{job.user_id}_{job.data}')
@@ -197,7 +198,12 @@ async def create_button_click(context: CallbackContext):
 
 async def create_email_parser(context: CallbackContext):
 	job = context.job
-	result = await mfc_start_parse(job.user_id)
+	
+	try:
+		result = await mfc_start_parse(job.user_id)
+	except Exception as e:
+		logger.error(e)
+
 	if not result:
 		return
 
@@ -207,11 +213,11 @@ async def create_email_parser(context: CallbackContext):
 		for v in result:
 			start_message = 'Файлы группы.' if v.get('m_type') else 'Сообщение студенту.'
 			date = dt.strptime(v.get('m_date'), '%Y-%m-%d %H:%M:%S').strftime('%H:%M:%S %d.%m.%Y')
-			await update.message.reply_text(f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
+			await context.bot.send_message(job.chat_id, f'{start_message} \n\nТекст сообщения: {v.get("m_text")} \n\nОтправитель: {v.get("m_sender")} \nДата: {date}')
 			if v.get('links'):
 				files_names = await start_download(v.get('links'))
 				for file in files_names:
-					await update.message.reply_document(document=open(file, 'rb'))
+					await context.bot.send_document(job.chat_id, document=open(file, 'rb'))
 					os.remove(file)
 
 		db.delete_file_by_user(_id=job.user_id)
@@ -291,8 +297,6 @@ def create_jobs(application, *, _id: int=None):
 				
 				start_time = moscow.localize(start_time)
 				end_time = moscow.localize(end_time)
-
-				#print(start_time, end_time, start_time.tzinfo)
 
 				job_queue.run_repeating(
 					create_button_click, 
