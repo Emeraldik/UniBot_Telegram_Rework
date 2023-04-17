@@ -6,48 +6,54 @@ class SQLObj():
 		self.connection = sqlite3.connect(db_file, check_same_thread=False)
 		self.cursor = self.connection.cursor()
 
-	def table_exists(self, user_id: int):
+	def table_exists(self, user_id: int=0, *, specific: bool = False):
 		with self.connection:
-			self.cursor.execute(f'''Create TABLE if not exists messages (
-				_id INT,
-				message_id INT UNIQUE,
-				m_date TEXT,
-				m_text TEXT,
-				m_sender TEXT,
-				m_file BOOLEAN,
-				m_type INT
-			);''')
+			if not specific:
+				self.cursor.execute(f'''Create TABLE if not exists messages (
+					_id INT,
+					message_id INT UNIQUE NOT NULL,
+					m_date TEXT,
+					m_text TEXT,
+					m_sender TEXT,
+					m_file BOOLEAN,
+					m_type INT
+				);''')
 
-			self.cursor.execute(f'''Create TABLE if not exists files (
-				_id INT,
-				file_id INT UNIQUE,
-				m_date TEXT,
-				m_text TEXT,
-				m_sender TEXT,
-				m_type INT,
-				links TEXT
-			);''')
+				self.cursor.execute(f'''Create TABLE if not exists files (
+					_id INT,
+					file_id INT UNIQUE NOT NULL,
+					m_date TEXT,
+					m_text TEXT,
+					m_sender TEXT,
+					m_type INT,
+					links TEXT
+				);''')
 
-			self.cursor.execute(f'''Create TABLE if not exists cookies (
-				_id INT UNIQUE,
-				__ddg1_ TEXT,
-				cookie TEXT,
-				miden TEXT,
-				uid TEXT
-			);''')
+				self.cursor.execute(f'''Create TABLE if not exists cookies (
+					_id INT UNIQUE NOT NULL,
+					__ddg1_ TEXT,
+					cookie TEXT,
+					miden TEXT,
+					uid TEXT
+				);''')
 
-			self.cursor.execute(f'''Create TABLE if not exists settings (
-				_id INT UNIQUE,
-				_chat_id INT UNIQUE,
-				get_mail BOOLEAN,
-				get_files BOOLEAN,
-				get_schedule BOOLEAN,
-				auto_click_button BOOLEAN
-			);''')
+				self.cursor.execute(f'''Create TABLE if not exists settings (
+					_id INT UNIQUE NOT NULL,
+					_chat_id INT UNIQUE,
+					get_mail BOOLEAN,
+					get_files BOOLEAN,
+					get_schedule BOOLEAN,
+					auto_click_button BOOLEAN
+				);''')
 
-			self.cursor.execute(f'''Create TABLE if not exists pairs_{user_id} 
-				(pairs INT UNIQUE)
-			''')
+				self.cursor.execute(f'''Create TABLE if not exists pairs_{user_id} 
+					(pairs INT UNIQUE)
+				''')
+			else:
+				self.cursor.execute(f'''Create TABLE if not exists links (
+					_id INTEGER PRIMARY KEY AUTOINCREMENT,
+					hdrezka TEXT NOT NULL
+				);''')
 
 	def close(self):
 		self.connection.close()
@@ -226,6 +232,8 @@ class SQLObj():
 			if self.record_exists(_id, 'files'):
 				self.cursor.execute('DELETE FROM `files` WHERE `_id` = ?', (_id,))
 
+# Pairs TABLE interactions
+
 	def add_pairs(self, user_id, pairs: list):
 		self.table_exists(user_id)
 
@@ -256,9 +264,35 @@ class SQLObj():
 			result = self.cursor.execute(f'SELECT * FROM pairs_{user_id}')
 			return [i[0] for i in result.fetchall()]
 
+# Links TABLE interactions
+
+	def get_links(self, l_type: str = 'hdrezka'):
+		if not (l_type in ['hdrezka', 'rustorka']):
+			raise ValueError('l_type not is "hdrezka"')
+
+		self.table_exists(specific=True)
+
+		with self.connection:
+			result = self.cursor.execute(f'SELECT `{l_type}` FROM `links`').fetchall()
+			return result[0][0] if result else None
+
+
+	def set_links(self, link: str, l_type: str = 'hdrezka'):
+		if not (l_type in ['hdrezka']): #Maybe i will add more
+			raise ValueError('l_type not is "hdrezka"')
+
+		self.table_exists(specific=True)
+
+		with self.connection:
+			if self.get_links(l_type):
+				self.cursor.execute(f'UPDATE `links` SET `{l_type}` = ? ', (link,))
+			else:
+				self.cursor.execute(f'INSERT OR REPLACE INTO `links` (`{l_type}`) VALUES (?)', (link,))
+
 if __name__ == '__main__':
 	db = SQLObj('../database/uni.db')
-	usid, chid, *settings = db.get_settings(556147516)[0]
+	#db.set_link()
+	#usid, chid, *settings = db.get_settings(556147516)[0]
 	# db.update_cookies(_id=123, ddg1_=2, cookie=4, miden=5, uid=6)
 	# print(db.get_cookies(123))
 	# db.update_cookies(_id=123,  cookie=4, miden=5, uid=6)

@@ -6,7 +6,9 @@ arsenic
 asyncio
 aiohttp
 aiofiles
+requests
 structlog
+urlextract
 python-dotenv
 fake_useragent
 webdriver_manager

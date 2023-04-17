@@ -34,15 +34,18 @@ def set_arsenic_log_level(level = logging.WARNING):
 
 async def async_browser_start():
 	set_arsenic_log_level(level = logging.ERROR)
-	service = services.Chromedriver(
+	try:
+		service = services.Chromedriver(
 		binary=DRIVER
-	)
-	browser = browsers.Chrome()
-	browser.capabilities = {#'--headless',
-		'goog:chromeOptions': {'args': ['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage']}
-	}
+		)
+		browser = browsers.Chrome()
+		browser.capabilities = {#'--headless',
+			'goog:chromeOptions': {'args': ['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage', '--headless']}
+		}
+	except:
+		raise WebDriverException(e)
+	
 	session = await start_session(service, browser)
-
 	# first block
 	try:
 		await session.get('https://lk.sut.ru')

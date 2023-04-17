@@ -12,13 +12,14 @@ from datetime import timedelta
 from datetime import datetime as dt
 
 from dotenv import load_dotenv, find_dotenv
-#from keep_alive import keep_alive
+from keep_alive import keep_alive
 
 from modules.sqlite import SQLObj
 from modules.schedule_parser import get_schedule
 from modules.file_downloader import start_download
 from modules.button_click import async_click_start
 from modules.message_files_collector import start_parse as mfc_start_parse
+from modules.hdrezka import async_get_new_hdrezka
 
 load_dotenv(find_dotenv())
 
@@ -149,6 +150,10 @@ async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 		await update.message.reply_text(f'Готово! \n{result}')
 
 
+async def hdrezka(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+	link = db.get_links(l_type='hdrezka')
+	await update.message.reply_text(f'Actual HDRezka site link : {link}')
+
 # async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 #     await update.message.reply_text(
 #         f"User exists in db : {db.get_settings(_id: int, get_mail: bool=False, get_files: bool=False, get_schedule: bool=False, auto_click_button: bool=False)}"
@@ -182,6 +187,7 @@ async def create_schedule_checker(context: CallbackContext):
 async def create_button_click(context: CallbackContext):
 	job = context.job
 
+	result = None
 	try:
 		result = await async_click_start(_id = job.user_id)
 	except Exception as e:
@@ -199,6 +205,7 @@ async def create_button_click(context: CallbackContext):
 async def create_email_parser(context: CallbackContext):
 	job = context.job
 	
+	result = None
 	try:
 		result = await mfc_start_parse(job.user_id)
 	except Exception as e:
@@ -226,7 +233,7 @@ async def create_email_parser(context: CallbackContext):
 
 def delete_jobs(application, _id: int):
 	jobs = []
-	for k in [1, 2, 3, 4, 5, 6, 86]:
+	for k in [1, 2, 3, 4, 5, 6, 85]:
 		current_jobs = application.job_queue.get_jobs_by_name(f'{_id}_{k}')
 		for job in current_jobs:
 			job.schedule_removal()
@@ -246,7 +253,7 @@ def delete_jobs(application, _id: int):
 
 def create_jobs(application, *, _id: int=None):
 	_id = _id or OWNER_ID
-	delete_jobs(application, _id)	
+	delete_jobs(application, _id)
 
 	moscow = timezone('Europe/Moscow')
 
@@ -259,7 +266,7 @@ def create_jobs(application, *, _id: int=None):
 		*ids, mail, files, schedule, auto_click = settings[0]
 
 	if mail:
-		job_queue.run_repeating(create_email_parser, interval=60*1, name=f'email_{_id}', user_id=_id, chat_id=_id)
+		job_queue.run_repeating(create_email_parser, interval=60*2, name=f'email_{_id}', user_id=_id, chat_id=_id)
 	
 	if schedule or auto_click:
 		start_time = dt.combine(dt.today(), datetime.time(hour=1))
@@ -286,7 +293,7 @@ def create_jobs(application, *, _id: int=None):
 				4: datetime.time(hour=14, minute=35),
 				5: datetime.time(hour=16, minute=20),
 				6: datetime.time(hour=18, minute=5),
-				86: datetime.time(hour=13, minute=20),
+				85: datetime.time(hour=13, minute=20),
 			} 
 
 			db_pairsdb = db.get_pairs(_id)
@@ -314,9 +321,13 @@ def create_jobs(application, *, _id: int=None):
 
 def main() -> None:
 	application = Application.builder().token(os.environ['TOKEN']).build()
-
+	
+	job_queue = application.job_queue
+	job_queue.run_repeating(async_get_new_hdrezka, interval=60*60, name='hdrezka')
+	
 	create_jobs(application)
 
+	application.add_handler(CommandHandler("hdrezka", hdrezka))
 	application.add_handler(CommandHandler("subscribe", subscribe, filters=filters.User(user_id=OWNER_ID)))
 	application.add_handler(CommandHandler("unsubscribe", unsubscribe, filters=filters.User(user_id=OWNER_ID)))
 	#application.add_handler(CommandHandler("help", help_command))
@@ -326,7 +337,7 @@ def main() -> None:
 
 	#application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
-	#keep_alive()
+	keep_alive()
 	application.run_polling()
 
 if __name__ == "__main__":
