@@ -2,7 +2,7 @@ import os
 import email
 import asyncio
 import imaplib as ilib
-from pytz import timezone
+from dateutil.tz import gettz
 #from pprint import pprint # optional 
 from bs4 import BeautifulSoup
 #from datetime import datetime
@@ -15,7 +15,7 @@ load_dotenv(find_dotenv())
 
 db = SQLObj('database/uni.db')
 
-tz_info = timezone('Europe/Moscow')
+tz_info = gettz('Europe/Moscow')
 
 def check_mailbox(host, user, password, _id :int=123):
 	

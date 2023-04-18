@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 
 from datetime import datetime as dt
-from pytz import timezone
+from dateutil.tz import gettz
 from dotenv import load_dotenv, find_dotenv
 import os
 
@@ -11,7 +11,7 @@ load_dotenv(find_dotenv())
 
 async def getDate(zone = 'UTC'):
 	start_date = dt.strptime(os.environ['START_DATE'], '%d-%m-%Y')
-	today_date = dt.strptime(dt.now(timezone(zone)).strftime('%Y-%m-%d'), '%Y-%m-%d')
+	today_date = dt.strptime(dt.now(gettz(zone)).strftime('%Y-%m-%d'), '%Y-%m-%d')
 	timedelta = today_date - start_date
 	return {'week' : timedelta.days // 7 + 1, 'day': timedelta.days % 7 + 1}
 

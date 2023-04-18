@@ -1,6 +1,6 @@
 import os
 import asyncio
-from pytz import timezone
+from dateutil.tz import gettz
 from dotenv import load_dotenv, find_dotenv
 
 import imaplib as ilib
@@ -21,7 +21,7 @@ from modules.sqlite import SQLObj
 #15 minutes limit
 load_dotenv(find_dotenv())
 
-tz_info = timezone('Europe/Moscow')
+tz_info = gettz('Europe/Moscow')
 
 extractor = URLExtract()
 db = SQLObj('database/uni.db')
@@ -90,7 +90,7 @@ async def async_get_new_hdrezka():
 	if not status:
 		return
 
-	await asyncio.sleep(10)
+	await asyncio.sleep(60)
 
 	link = await asyncio.wrap_future(loop.run_in_executor(None, check_mailbox, 'imap.yandex.ru', os.environ['EMAIL'], os.environ['PASS_MAIL']))
 

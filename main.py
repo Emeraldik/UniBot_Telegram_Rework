@@ -7,9 +7,11 @@ import logging
 #import aiofiles.os
 
 import datetime
-from pytz import timezone
 from datetime import timedelta
 from datetime import datetime as dt
+
+from dateutil.utils import today
+from dateutil.tz import gettz
 
 from dotenv import load_dotenv, find_dotenv
 from keep_alive import keep_alive
@@ -230,6 +232,8 @@ async def create_email_parser(context: CallbackContext):
 		db.delete_file_by_user(_id=job.user_id)
 		db.delete_message_by_user(_id=job.user_id)
 
+async def create_hdrezka(context: CallbackContext):
+	await async_get_new_hdrezka()
 
 def delete_jobs(application, _id: int):
 	jobs = []
@@ -255,7 +259,7 @@ def create_jobs(application, *, _id: int=None):
 	_id = _id or OWNER_ID
 	delete_jobs(application, _id)
 
-	moscow = timezone('Europe/Moscow')
+	moscow = gettz('Europe/Moscow')
 
 	job_queue = application.job_queue
 
@@ -269,11 +273,11 @@ def create_jobs(application, *, _id: int=None):
 		job_queue.run_repeating(create_email_parser, interval=60*2, name=f'email_{_id}', user_id=_id, chat_id=_id)
 	
 	if schedule or auto_click:
-		start_time = dt.combine(dt.today(), datetime.time(hour=1))
-		end_time = start_time + timedelta(hours=7)
+		start_time = dt.combine(today(tzinfo=moscow), datetime.time(hour=2, tzinfo=moscow))
+		end_time = start_time + timedelta(hours=6)
 		
-		start_time = moscow.localize(start_time)
-		end_time = moscow.localize(end_time)
+		# start_time = moscow.localize(start_time)
+		# end_time = moscow.localize(end_time)
 
 		job_queue.run_repeating(
 			create_schedule_checker, 
@@ -287,23 +291,23 @@ def create_jobs(application, *, _id: int=None):
 
 		if auto_click:
 			dict_pairs = {
-				1: datetime.time(hour=8, minute=50),
-				2: datetime.time(hour=10, minute=35),
-				3: datetime.time(hour=12, minute=50),
-				4: datetime.time(hour=14, minute=35),
-				5: datetime.time(hour=16, minute=20),
-				6: datetime.time(hour=18, minute=5),
-				85: datetime.time(hour=13, minute=20),
+				1: datetime.time(hour=8, minute=50, tzinfo=moscow),
+				2: datetime.time(hour=10, minute=35, tzinfo=moscow),
+				3: datetime.time(hour=12, minute=50, tzinfo=moscow),
+				4: datetime.time(hour=14, minute=35, tzinfo=moscow),
+				5: datetime.time(hour=16, minute=20, tzinfo=moscow),
+				6: datetime.time(hour=18, minute=5, tzinfo=moscow),
+				85: datetime.time(hour=13, minute=20, tzinfo=moscow),
 			} 
 
 			db_pairsdb = db.get_pairs(_id)
 
 			for k in db_pairsdb:
-				start_time = dt.combine(dt.today(), dict_pairs.get(k, datetime.time(hour=8, minute=50)))
+				start_time = dt.combine(today(tzinfo=moscow), dict_pairs.get(k, datetime.time(hour=8, minute=50, tzinfo=moscow)))
 				end_time = start_time + timedelta(minutes=100)
 				
-				start_time = moscow.localize(start_time)
-				end_time = moscow.localize(end_time)
+				# start_time = moscow.localize(start_time)
+				# end_time = moscow.localize(end_time)
 
 				job_queue.run_repeating(
 					create_button_click, 
@@ -323,7 +327,7 @@ def main() -> None:
 	application = Application.builder().token(os.environ['TOKEN']).build()
 	
 	job_queue = application.job_queue
-	job_queue.run_repeating(async_get_new_hdrezka, interval=60*60, name='hdrezka')
+	job_queue.run_repeating(create_hdrezka, interval=60*60*6, name='hdrezka')
 	
 	create_jobs(application)
 
