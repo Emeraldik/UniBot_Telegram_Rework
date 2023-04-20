@@ -180,6 +180,8 @@ async def create_schedule_checker(context: CallbackContext):
 		
 		await context.bot.send_message(job.chat_id, text=f'Pairs today : \n{result}')
 
+	create_jobs(context, _id=job.user_id)
+
 	current_job = context.job_queue.get_jobs_by_name(f'schedule_{job.user_id}')
 	if current_job:
 		for job in current_job:
@@ -272,7 +274,7 @@ def create_jobs(application, *, _id: int=None):
 	if mail:
 		job_queue.run_repeating(create_email_parser, interval=60*2, name=f'email_{_id}', user_id=_id, chat_id=_id)
 	
-	if schedule or auto_click:
+	if schedule:
 		start_time = dt.combine(today(tzinfo=moscow), datetime.time(hour=2, tzinfo=moscow))
 		end_time = start_time + timedelta(hours=6)
 		
@@ -283,42 +285,42 @@ def create_jobs(application, *, _id: int=None):
 			create_schedule_checker, 
 			name=f'schedule_{_id}',
 			first=start_time, 
-			interval=60*1, 
+			interval=30, 
 			last=end_time, 
 			user_id=_id, 
 			chat_id=_id
 		)
 
-		if auto_click:
-			dict_pairs = {
-				1: datetime.time(hour=8, minute=50, tzinfo=moscow),
-				2: datetime.time(hour=10, minute=35, tzinfo=moscow),
-				3: datetime.time(hour=12, minute=50, tzinfo=moscow),
-				4: datetime.time(hour=14, minute=35, tzinfo=moscow),
-				5: datetime.time(hour=16, minute=20, tzinfo=moscow),
-				6: datetime.time(hour=18, minute=5, tzinfo=moscow),
-				85: datetime.time(hour=13, minute=20, tzinfo=moscow),
-			} 
+	if auto_click:
+		dict_pairs = {
+			1: datetime.time(hour=8, minute=50, tzinfo=moscow),
+			2: datetime.time(hour=10, minute=35, tzinfo=moscow),
+			3: datetime.time(hour=12, minute=50, tzinfo=moscow),
+			4: datetime.time(hour=14, minute=35, tzinfo=moscow),
+			5: datetime.time(hour=16, minute=20, tzinfo=moscow),
+			6: datetime.time(hour=18, minute=5, tzinfo=moscow),
+			85: datetime.time(hour=13, minute=20, tzinfo=moscow),
+		} 
 
-			db_pairsdb = db.get_pairs(_id)
+		db_pairsdb = db.get_pairs(_id)
 
-			for k in db_pairsdb:
-				start_time = dt.combine(today(tzinfo=moscow), dict_pairs.get(k, datetime.time(hour=8, minute=50, tzinfo=moscow)))
-				end_time = start_time + timedelta(minutes=100)
-				
-				# start_time = moscow.localize(start_time)
-				# end_time = moscow.localize(end_time)
+		for k in db_pairsdb:
+			start_time = dt.combine(today(tzinfo=moscow), dict_pairs.get(k, datetime.time(hour=13, minute=20, tzinfo=moscow)))
+			end_time = start_time + timedelta(minutes=100)
+			
+			# start_time = moscow.localize(start_time)
+			# end_time = moscow.localize(end_time)
 
-				job_queue.run_repeating(
-					create_button_click, 
-					name=f'{_id}_{k}',
-					first=start_time, 
-					interval=60*5, 
-					last=end_time, 
-					user_id=_id, 
-					chat_id=_id, 
-					data=k
-				)
+			job_queue.run_repeating(
+				create_button_click, 
+				name=f'{_id}_{k}',
+				first=start_time, 
+				interval=60*5, 
+				last=end_time, 
+				user_id=_id, 
+				chat_id=_id, 
+				data=k
+			)
 
 	return True
 
@@ -327,7 +329,7 @@ def main() -> None:
 	application = Application.builder().token(os.environ['TOKEN']).build()
 	
 	job_queue = application.job_queue
-	job_queue.run_repeating(create_hdrezka, interval=60*60*6, name='hdrezka')
+	job_queue.run_repeating(create_hdrezka, interval=60*60*4, name='hdrezka')
 	
 	create_jobs(application)
 
