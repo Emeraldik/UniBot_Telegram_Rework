@@ -173,12 +173,12 @@ async def create_schedule_checker(context: CallbackContext):
 	db.clear_pairs(job.user_id)
 	db.add_pairs(job.user_id, [i for i in schedule.keys()])
 		
-	if job.chat_id:
-		result = "\n".join([(f'{k}: {v[0]}') for k, v in schedule.items()])
-		if not result:
-			result = 'No pairs'
+	# if job.chat_id:
+	# 	result = "\n".join([(f'{k}: {v[0]}') for k, v in schedule.items()])
+	# 	if not result:
+	# 		result = 'No pairs'
 		
-		await context.bot.send_message(job.chat_id, text=f'Pairs today : \n{result}')
+	# 	await context.bot.send_message(job.chat_id, text=f'Pairs today : \n{result}')
 
 	create_jobs(context, _id=job.user_id)
 
@@ -255,6 +255,11 @@ def delete_jobs(application, _id: int):
 		job.schedule_removal()
 		jobs.append(job.name)
 
+	current_jobs = application.job_queue.get_jobs_by_name(f'schedule_days_{_id}')
+	for job in current_jobs:
+		job.schedule_removal()
+		jobs.append(job.name)
+
 	return jobs
 
 def create_jobs(application, *, _id: int=None):
@@ -287,6 +292,15 @@ def create_jobs(application, *, _id: int=None):
 			first=start_time, 
 			interval=30, 
 			last=end_time, 
+			user_id=_id, 
+			chat_id=_id
+		)
+
+		job_queue.run_daily(
+			create_schedule_checker, 
+			name=f'schedule_days_{_id}',
+			time=start_time,
+			days = (1,2,4,5,6), 
 			user_id=_id, 
 			chat_id=_id
 		)
