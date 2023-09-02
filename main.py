@@ -76,7 +76,7 @@ async def subscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 #@is_owner
 async def pairs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-	await update.message.reply_text(f'Wait a 5 seconds, start parsing')
+	await update.message.reply_text(f'Ожидайте примерно 5 сек.')
 	user_id = update.effective_user.id
 	schedule = await get_schedule(autoweekday=True)
 	db.clear_pairs(user_id)
@@ -84,19 +84,19 @@ async def pairs(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	
 	result = "\n".join([(f'{k}: {v[0]}') for k, v in schedule.items()])
 	if not result:
-		result = 'No pairs'
-	await update.message.reply_text(f'Pairs today : \n{result}')
+		result = 'Пар нет'
+	await update.message.reply_text(f'Пары: \n{result}')
 
 #@is_owner
 async def messages(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-	await update.message.reply_text(f'Wait a 10 seconds, start parsing')
+	await update.message.reply_text(f'Ожидайте примерно 10 сек.')
 	try:
 		result = await mfc_start_parse(update.effective_user.id)
 	except:
-		await update.message.reply_text(f'Sorry! Something went wrong.')
+		await update.message.reply_text(f'Что-то пошло не так.')
 	else:
 		if not result:
-			await update.message.reply_text('No messages')
+			await update.message.reply_text('Нет сообщений')
 			return
 
 		result = sorted(result, key=lambda item: item.get('m_date'))
@@ -141,20 +141,20 @@ async def unsubscribe(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 		)
 
 async def button_click(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-	await update.message.reply_text(f'Wait a 5 seconds, start operation')
+	await update.message.reply_text(f'Ожидайте 5 сек.')
 	try:
 		button_result = await async_click_start(update.effective_user.id, with_print=True)
 	except:
-		await update.message.reply_text(f'Sorry! Something went wrong.')
+		await update.message.reply_text(f'Что-то пошло не так.')
 	else:
 		if not button_result:
-			result = 'Button wasn\'t clicked'
+			result = 'Кнопка не нажата'
 		await update.message.reply_text(f'Готово! \n{result}')
 
 
 async def hdrezka(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	link = db.get_links(l_type='hdrezka')
-	await update.message.reply_text(f'Actual HDRezka site link : {link}')
+	await update.message.reply_text(f'Рабочая? Ссылка на сайт HDRezka: {link}')
 
 # async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 #     await update.message.reply_text(
