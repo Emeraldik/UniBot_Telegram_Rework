@@ -8,7 +8,6 @@ aiohttp
 aiofiles
 requests
 dateutils
-structlog
 urlextract
 python-dotenv
 fake_useragent

@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "unibot-telegram-rework"
+version = "0.1.0"
+description = ""
+authors = ["Emeraldik <Emerlidfeed@yandex.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+bs4 = "^0.0.1"
+pytz = "^2023.3"
+lxml = "^4.9.3"
+loguru = "^0.7.0"
+arsenic = "^21.8"
+asyncio = "^3.4.3"
+aiohttp = "^3.8.5"
+aiofiles = "^23.2.1"
+requests = "^2.31.0"
+dateutils = "^0.6.12"
+urlextract = "^1.8.0"
+python-dotenv = "^1.0.0"
+fake-useragent = "^1.2.1"
+webdriver-manager = "^4.0.0"
+python-telegram-bot = {extras = ["all"], version = "^20.4"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
