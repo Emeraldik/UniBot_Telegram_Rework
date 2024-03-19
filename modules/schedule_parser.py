@@ -23,7 +23,7 @@ async def get_schedule(autoweekday = False, day = 1, week = 1):
 	}
 
 	payload = {
-		'schet': '205.2223/2',
+		'schet': '205.2324/2',
 		'type_z': 1,
 		'faculty': 50029,
 		'group': 54865,
