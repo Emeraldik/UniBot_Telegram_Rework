@@ -14,7 +14,6 @@ from dateutil.utils import today
 from dateutil.tz import gettz
 
 from dotenv import load_dotenv, find_dotenv
-from keep_alive import keep_alive
 
 from modules.sqlite import SQLObj
 from modules.schedule_parser import get_schedule
@@ -357,7 +356,6 @@ def main() -> None:
 
 	#application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
-	keep_alive()
 	application.run_polling()
 
 if __name__ == "__main__":
