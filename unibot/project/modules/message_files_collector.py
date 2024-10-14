@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 import asyncio
 
-db = SQLObj('database/uni.db')
+db = SQLObj('project/database/uni.db')
 
 async def start_parse(_id):
 	await e_start_parse(_id)

@@ -290,7 +290,7 @@ class SQLObj():
 				self.cursor.execute(f'INSERT OR REPLACE INTO `links` (`{l_type}`) VALUES (?)', (link,))
 
 if __name__ == '__main__':
-	db = SQLObj('../database/uni.db')
+	db = SQLObj('project/database/uni.db')
 	#db.set_link()
 	#usid, chid, *settings = db.get_settings(556147516)[0]
 	# db.update_cookies(_id=123, ddg1_=2, cookie=4, miden=5, uid=6)

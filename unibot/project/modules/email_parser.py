@@ -13,7 +13,7 @@ from modules.logger import logger
 
 load_dotenv(find_dotenv())
 
-db = SQLObj('database/uni.db')
+db = SQLObj('project/database/uni.db')
 
 tz_info = gettz('Europe/Moscow')
 

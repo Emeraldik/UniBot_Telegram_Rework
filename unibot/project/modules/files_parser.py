@@ -15,7 +15,7 @@ from modules.exceptions import RequestException, RequestExceptionCritical
 
 load_dotenv(find_dotenv())
 
-db = SQLObj('database/uni.db')
+db = SQLObj('project/database/uni.db')
 
 headers = {
 	'authority': 'lk.sut.ru',

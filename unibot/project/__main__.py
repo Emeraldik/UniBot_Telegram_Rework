@@ -32,7 +32,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-db = SQLObj('database/uni.db')
+db = SQLObj('project/database/uni.db')
 
 # def is_owner(func):
 #     async def wrapper(update: Update, *args, **kwargs):

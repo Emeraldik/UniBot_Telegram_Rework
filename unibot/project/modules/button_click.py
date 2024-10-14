@@ -12,7 +12,7 @@ from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
 
-db = SQLObj('database/uni.db')
+db = SQLObj('project/database/uni.db')
 
 headers = {
 	'authority': 'lk.sut.ru',

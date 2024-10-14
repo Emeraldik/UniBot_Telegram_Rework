@@ -24,7 +24,7 @@ load_dotenv(find_dotenv())
 tz_info = gettz('Europe/Moscow')
 
 extractor = URLExtract()
-db = SQLObj('database/uni.db')
+db = SQLObj('project/database/uni.db')
 
 def check_status(url: str) -> bool:
 	headers = {

@@ -1,0 +1,10 @@
+services:
+  base:
+    build:
+      context: ./unibot
+      dockerfile: Dockerfile
+    volumes:
+      - ./unibot/logger.log:/code/logger.log
+      - ./unibot/project/database/uni.db:/code/project/database/uni.db
+    environment:
+      - TZ=Europe/Moscow

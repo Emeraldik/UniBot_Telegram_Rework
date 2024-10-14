@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "telegram-uni-bot"
+version = "1.0.0"
+description = ""
+authors = ["Emeraldik <emerlidfeed@yandex.ru>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10.0, <4.0"
+Flask = "^2.2.0"
+urllib3 = "^1.26.12"
+python-telegram-bot = {extras = ["all"], version = "^21.6"}
+python-dateutil = "^2.9.0.post0"
+python-dotenv = "^1.0.1"
+asyncio = "^3.4.3"
+aiohttp = "^3.10.10"
+beautifulsoup4 = "^4.12.3"
+fake-useragent = "^1.5.1"
+aiofiles = "^24.1.0"
+arsenic = "^21.8"
+webdriver-manager = "^4.0.2"
+loguru = "^0.7.2"
+urlextract = "^1.9.0"
+lxml = "^5.3.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
